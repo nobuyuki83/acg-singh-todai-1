@@ -39,10 +39,10 @@ Eigen::Matrix4f camera_transformation() {
  * @param img_data_tex texture image data
  */
 void draw_3d_triangle_with_texture(
-    const Eigen::Vector4f &q0,
+    const Eigen::Vector4f &q0,        //global
     const Eigen::Vector4f &q1,
     const Eigen::Vector4f &q2,
-    const Eigen::Vector2f &uv0,
+    const Eigen::Vector2f &uv0,       
     const Eigen::Vector2f &uv1,
     const Eigen::Vector2f &uv2,
     unsigned int width_out,
@@ -51,6 +51,9 @@ void draw_3d_triangle_with_texture(
     unsigned int width_tex,
     unsigned int height_tex,
     std::vector<unsigned char> &img_data_tex) {
+  // float z0=1/q0[2];
+  // float z1=1/q1[2];
+  // float z2=1/q2[2];
   for (unsigned int ih = 0; ih < height_out; ++ih) {
     for (unsigned int iw = 0; iw < width_out; ++iw) {
       const auto s = Eigen::Vector2f( // coordinate of the pixel in the normalized device coordinate [-1,1]^2
@@ -63,12 +66,19 @@ void draw_3d_triangle_with_texture(
       const float area1 = (r2 - s).cross(r0 - s);
       const float area2 = (r0 - s).cross(r1 - s);
       if (area0 < 0. || area1 < 0. || area2 < 0.) { continue; } // the pixel is outside the triangle (r0, r1, r2)
-      Eigen::Vector3f bc = Eigen::Vector3f(area0, area1, area2) / (area0 + area1 + area2); // barycentric coordinate on screen
+      // Eigen::Vector3f bc = Eigen::Vector3f(area0, area1, area2) / (area0 + area1 + area2); // barycentric coordinate on screen
       // `bc` gives the barycentric coordinate **on the screen** and it is distorted.
       // Compute the barycentric coordinate ***on the 3d triangle** below that gives the correct texture mapping.
       // (Hint: formulate a linear system with 4x4 coefficient matrix and solve it to get the barycentric coordinate)
-      Eigen::Matrix4f coeff;
-      Eigen::Vector4f rhs;
+      Eigen::Matrix4f coeff{
+        {q0[0],q1[0],q2[0],-s[0]},{q0[1],q1[1],q2[1],-s[1]},{q0[3],q1[3],q2[3],-1},{1,1,1,0}
+      };
+      Eigen::Vector4f rhs{
+        0,0,0,1
+      };
+      Eigen::Vector3f bc=(coeff.inverse()*rhs).head(3);
+      // float dpt=z0*bc[0] + z1*bc[1] + z2*bc[2];
+      // bc=Eigen::Vector3f(bc[0]*dpt,bc[1]*dpt,bc[2]*dpt);
 
       // do not change below
       auto uv = uv0 * bc[0] + uv1 * bc[1] + uv2 * bc[2]; // uv coordinate of the pixel
