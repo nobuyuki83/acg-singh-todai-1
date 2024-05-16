@@ -27,6 +27,33 @@ void main()
         //x0 = ???
         //y0 = ???
         //z0 = ???
+
+        
+//        mat4 coeff = mat4(
+//          nrm[0],nrm[1],nrm[2],0,
+//          1,0,0,nrm[0],
+//          0,1,0,nrm[1],
+//          0,0,1,nrm[2]
+//          );
+//
+//        vec4 rhs= vec4(nrm[0]*(-0.3) + nrm[1]*(-0.5),x0,y0,z0);
+//        mat4 i_coeff = inverse(coeff);
+//        vec4 sol= i_coeff*rhs;
+//
+//        float c=sol[3];
+//        float z=sol[2]-nrm[2]*c;
+//        x0 = sol[0] - c*nrm[0];
+//        y0 = sol[1] - c*nrm[1];
+//        z0 = z;
+
+        vec3 dp=vec3(x0,y0,z0) - org;
+        float dt=-dot(nrm,dp);
+        vec3 rp=vec3(x0,y0,z0)+ 2*dt*nrm;
+
+        x0=rp.x;
+        y0=rp.y;
+        z0=rp.z/5;
+
     }
     // do not edit below
 
