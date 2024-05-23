@@ -36,15 +36,41 @@ float box_size = 0.6; // size of box
 float SDF(vec3 pos)
 {
   float d0 = sdCappedCylinder(pos, len_cylinder, rad_cylinder);
+  float d1 = sdCappedCylinder(vec3(pos.z,pos.y,pos.x), len_cylinder, rad_cylinder);
+  float d2 = sdCappedCylinder(vec3(pos.x,pos.z,pos.y), len_cylinder, rad_cylinder);
+  
+  float i1=max(sdSphere(pos,rad_sphere),sdBox(pos,box_size));
+  float i2=min(d1,d2,d0);
+  
+  
   // write some code to combine the signed distance fields above to design the object described in the README.md
-  return d0; // comment out and define new distance
+  return i1-i2; // comment out and define new distance
 }
 
 /// RGB color at the position `pos`
 vec3 SDF_color(vec3 pos)
 {
-  // write some code below to return color (RGB from 0 to 1) to paint the object describe in README.md
-  return vec3(0., 1., 0.); // comment out and define new color
+  float d0 = sdCappedCylinder(pos, len_cylinder, rad_cylinder);
+  float d1 = sdCappedCylinder(vec3(pos.z,pos.y,pos.x), len_cylinder, rad_cylinder);
+  float d2 = sdCappedCylinder(vec3(pos.x,pos.z,pos.y), len_cylinder, rad_cylinder);
+  float i2=min(d1,d2,d0);
+  
+  float b1=sdBox(pos,box_size);
+  
+  float s1=sdSphere(pos,rad_sphere);
+  
+  float t = SDF(pos);
+  
+  if(s1==t){return vec3(0.,0.,1.);}
+
+  else{
+    if(b1==t){return vec3(1.,0.,0.);}
+    else{
+        return vec3(0.,1.,0.);
+    }
+}
+// write some code below to return color (RGB from 0 to 1) to paint the object describe in README.md
+// comment out and define new color
 }
 
 uniform float time; // current time given from CPU
