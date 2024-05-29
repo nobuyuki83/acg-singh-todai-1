@@ -1,5 +1,4 @@
 # Task06: Ambient Occlusion and BVH (Monte Carlo Integration, Importance Sampling)
-
 ![preview](preview.png)
 
 **Deadline: May 30th (Thu) at 15:00pm**
@@ -40,7 +39,7 @@ The program output the computation time. Fill the table below to compare the tim
 
 | brute force | BVH    |
 | ----------- | ------ |
-| ??? ms      | ??? ms |
+| 5721 ms     | 48 ms  |
 
 
 
