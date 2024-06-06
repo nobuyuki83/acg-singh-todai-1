@@ -417,7 +417,7 @@ int main() {
         float hit1_rad = spheres[hit1_object].emission;
         float hit0_pdf_light_sample = pdf_light_sample(hit0_normal, hit0_pos, cam_ray_dir, hit0_refl, hit0_object);
         float hit0_pdf_brdf_sample = spheres[hit0_object].pdf(hit0_normal, cam_ray_dir, hit0_refl);
-        float w2=hit0_pdf_brdf_sample/(hit0_pdf_brdf_sample+hit0_pdf_light_sample);
+        float w2=hit0_pdf_light_sample/(hit0_pdf_brdf_sample+hit0_pdf_light_sample);
         float rad=w2*hit0_brdf*(hit1_rad*(hit1_normal.dot((hit0_pos-hit1_pos).normalized()))*hit0_refl.dot(hit0_normal)/(nsample*hit0_pdf_light_sample));
         img_mis[ih * img_width + iw] += rad;
       }
